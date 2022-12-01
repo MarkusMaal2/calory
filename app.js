@@ -50,7 +50,7 @@ const UIController = (function() {
     }
 })();
 
-// App Controller
+// App controller
 const App = (function () {
     return {
         init: function () {
