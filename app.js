@@ -30,6 +30,18 @@ const ItemCtrl = (function() {
             })
             data.total = total
             return data.total
+        },
+        addItem: function (name, calories) {
+            let ID;
+            if (data.items.length > 0) {
+                ID = data.items[data.items.length - 1].id + 1
+            } else {
+                ID = 0;
+            }
+            calories = parseInt(calories)
+            let newItem = new Item(ID, name, calories)
+            data.items.push(newItem)
+            return newItem
         }
     }
 })();
@@ -46,12 +58,40 @@ const UIController = (function() {
         },
         showTotalCalories: function(totalCalories) {
             document.querySelector(".total-calories").textContent = totalCalories
+        },
+
+        getItemInput: function (){
+            return {
+                name: document.querySelector("#item-name").value,
+                calories: document.querySelector("#item-calories").value
+            }
+        },
+        addListItem: function(item) {
+            const li = document.createElement("li")
+            li.id = `item-${item.id}`
+            li.innerHTML = `<strong>${item.name}</strong>: <em>${item.calories}</em> cal`
+            document.querySelector("ul").insertAdjacentElement("beforeend", li)
+        },
+        clearInput: function () {
+            document.querySelector("#item-calories").value = ""
+            document.querySelector("#item-name").value = ""
         }
     }
 })();
 
 // App controller
 const App = (function () {
+
+    const itemAddSubmit = function(e) {
+        const userInput = UIController.getItemInput()
+        if (userInput.name !== "" && userInput.calories !== "") {
+            const newItem = ItemCtrl.addItem(userInput.name, userInput.calories)
+            UIController.addListItem(newItem)
+            UIController.clearInput()
+        }
+        e.preventDefault()
+    }
+
     return {
         init: function () {
             const items = ItemCtrl.getItems()
@@ -59,6 +99,8 @@ const App = (function () {
             UIController.populateItemList(items)
             const totalCalories = ItemCtrl.getTotalCalories()
             UIController.showTotalCalories(totalCalories)
+
+            document.querySelector(".add-button").addEventListener("click", itemAddSubmit)
         }
     }
 })(ItemCtrl, UIController);
