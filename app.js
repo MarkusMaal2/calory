@@ -9,9 +9,9 @@ const ItemCtrl = (function() {
     // data structure
     const data = {
         items: [
-            new Item(0, "Steak Dinner", 1200),
-            new Item(1, "Cookie", 200),
-            new Item(2, "Eggs", 300),
+            //new Item(0, "Steak Dinner", 1200),
+            //new Item(1, "Cookie", 200),
+            //new Item(2, "Eggs", 300),
         ],
         total: 0
     }
@@ -42,6 +42,31 @@ const ItemCtrl = (function() {
             let newItem = new Item(ID, name, calories)
             data.items.push(newItem)
             return newItem
+        }
+    }
+})();
+
+// Storage Controller
+const StorageCtrl = (function () {
+    return {
+        storeItem: function (item) {
+            let items
+            if (localStorage.getItem("items") === null) {
+                items = []
+            } else{
+                items = JSON.parse(localStorage.getItem("items"))
+            }
+            items.push(item)
+            localStorage.setItem("items", JSON.stringify(items))
+        },
+        getItemsFromStorage: function () {
+            let items
+            if (localStorage.getItem("items") === null) {
+                items = []
+            } else{
+                items = JSON.parse(localStorage.getItem("items"))
+            }
+            return items
         }
     }
 })();
@@ -87,23 +112,35 @@ const App = (function () {
         if (userInput.name !== "" && userInput.calories !== "") {
             const newItem = ItemCtrl.addItem(userInput.name, userInput.calories)
             UIController.addListItem(newItem)
+            StorageCtrl.storeItem(newItem)
             UIController.showTotalCalories(ItemCtrl.getTotalCalories())
             UIController.clearInput()
         }
         e.preventDefault()
     }
+    const getItemsFromStorage = function () {
+        const items = StorageCtrl.getItemsFromStorage()
+        items.forEach(function (item) {
+            ItemCtrl.addItem(item.name, item.calories)
+        })
+        const totalCalories = ItemCtrl.getTotalCalories()
+        UIController.showTotalCalories(totalCalories)
+        UIController.populateItemList(items)
+    }
 
     return {
+
         init: function () {
-            const items = ItemCtrl.getItems()
-            console.log(items)
-            UIController.populateItemList(items)
-            const totalCalories = ItemCtrl.getTotalCalories()
-            UIController.showTotalCalories(totalCalories)
+            document.addEventListener("DOMContentLoaded", getItemsFromStorage)
+            //const items = ItemCtrl.getItems()
+            //console.log(items)
+            //UIController.populateItemList(items)
+            //const totalCalories = ItemCtrl.getTotalCalories()
+            //UIController.showTotalCalories(totalCalories)
 
             document.querySelector(".add-button").addEventListener("click", itemAddSubmit)
         }
     }
-})(ItemCtrl, UIController);
+})(ItemCtrl, UIController, StorageCtrl);
 
 App.init()
