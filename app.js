@@ -82,6 +82,10 @@ const ItemCtrl = (function() {
                 }
             })
             return deletedElement
+        },
+        clearItems: function() {
+            data.items = []
+            data.currentItem = null
         }
     }
 })();
@@ -136,6 +140,10 @@ const StorageCtrl = (function () {
                 }
             })
             localStorage.setItem("items", JSON.stringify(items))
+        },
+
+        resetStorage: function() {
+            localStorage.setItem("items", JSON.stringify([]))
         }
     }
 })();
@@ -149,6 +157,8 @@ const UIController = (function() {
         itemCaloriesInput: '#item-calories',
         updateBtn: ".update-button",
         deleteBtn: ".delete-button",
+        clearBtn: ".clear-button",
+        backBtn: ".back-button",
         listOfItems: "#item-list li"
     }
 
@@ -197,11 +207,14 @@ const UIController = (function() {
             document.querySelector(UISelectors.addBtn).style.display = "none"
             document.querySelector(UISelectors.deleteBtn).style.display = "inline"
             document.querySelector(UISelectors.updateBtn).style.display = "inline"
+            document.querySelector(UISelectors.backBtn).style.display = "inline"
         },
         clearEditState: function () {
             document.querySelector(UISelectors.addBtn).style.display = "inline"
             document.querySelector(UISelectors.deleteBtn).style.display = "none"
             document.querySelector(UISelectors.updateBtn).style.display = "none"
+            document.querySelector(UISelectors.backBtn).style.display = "none"
+            UIController.clearInput()
         },
         addItemToForm: function ()
         {
@@ -233,6 +246,10 @@ const UIController = (function() {
                     document.querySelector("#" + listItemID).remove()
                 }
             })
+        },
+
+        clearItems: function() {
+            document.querySelector(UISelectors.itemList).innerHTML = ""
         }
     }
 })();
@@ -295,6 +312,17 @@ const App = (function () {
         e.preventDefault()
     }
 
+    const clearAllSubmit = function(e) {
+        ItemCtrl.clearItems()
+        UIController.clearItems()
+        StorageCtrl.resetStorage()
+        // Clear edit state in case the user is still in it
+        UIController.clearInput()
+        UIController.clearEditState()
+        UIController.showTotalCalories(0)
+        e.preventDefault()
+    }
+
     const loadEventListeners = function (){
         const UISelectors = UIController.getSelectors()
         document.addEventListener('DOMContentLoaded', getItemsFromStorage)
@@ -302,6 +330,8 @@ const App = (function () {
         document.querySelector(UISelectors.itemList).addEventListener("click", itemEditSubmit)
         document.querySelector(UISelectors.updateBtn).addEventListener("click", itemUpdateSubmit)
         document.querySelector(UISelectors.deleteBtn).addEventListener("click", itemDeleteSubmit)
+        document.querySelector(UISelectors.clearBtn).addEventListener("click", clearAllSubmit)
+        document.querySelector(UISelectors.backBtn).addEventListener("click", UIController.clearEditState)
         document.addEventListener("DOMContentLoaded", getItemsFromStorage)
     }
 
