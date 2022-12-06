@@ -6,19 +6,48 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://kit.fontawesome.com/d325d04eee.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <form action=".">
-        <label for="item-name">Meal </label>
-        <input type="text" id="item-name"><br>
+<!-- Navbar -->
+<nav>
+    <div class="nav-wrapper green">
+        <div class="container">
+            <a href="#" class="brand-logo center">Calory tracker</a>
+        </div>
+    </div>
+</nav>
 
-        <label for="item-calories">Calories </label>
-        <input type="text" id="item-calories"><br>
+<br>
 
-        <button class="add-button">Add meal</button>
-    </form>
-    <h3>Total calories: <span class="total-calories">0</span></h3>
-    <ul></ul>
+<div class="container">
+    <!-- Form Card -->
+    <div class="card">
+        <div class="card-content">
+            <span class="card-title">Add Meal / Food Item</span>
+            <form class="col">
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input type="text" placeholder="Add Item" id="item-name">
+                    </div>
+                    <div class="input-field col s6">
+                        <input type="number" placeholder="Add Calories" id="item-calories">
+                    </div>
+                    <button class="add-button btn green darken-3"><i class="fa fa-plus"></i> Add meal</button>
+                    <button class="update-button btn orange darken-3"><i class="fa-solid fa-pencil"></i> Update meal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Calorie Count -->
+    <h3 class="center-align">Total Calories: <span class="total-calories">0</span></h3>
+
+    <!-- Item List -->
+    <ul id="item-list" class="collection">
+    </ul>
+</div>
     <script src="app.js"></script>
 </body>
 </html>
